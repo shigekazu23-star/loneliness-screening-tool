@@ -1,6 +1,7 @@
 # loneliness-screening-tool
 A loneliness screening and visualization tool for older adults (MSIT Capstone)
 
+Add project README with overview, stack, and structure
 # Loneliness Screening and Visualization Tool for Older Adults
 
 An MSIT Capstone project. A web application that administers the validated
@@ -27,4 +28,3 @@ authorized caregiver can respond.
 
 ## Status
 Detailed design stage (Unit 3). Implementation to follow.
-````
