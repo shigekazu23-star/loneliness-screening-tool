@@ -1,0 +1,142 @@
+/* ---- Usability NFR from the Unit 3 design ----
+   Large type, high contrast, simple navigation. Base font 20px and
+   large touch targets so older adults with low digital literacy and
+   reduced vision can use the tool without assistance. */
+
+:root {
+  --ink: #1a1a1a;
+  --paper: #ffffff;
+  --accent: #00509e;
+  --accent-ink: #ffffff;
+  --line: #767676;
+  --ok: #1b6e1b;
+  --warn: #a83200;
+  --warn-bg: #fff2ec;
+  --ok-bg: #eef7ee;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
+  font-size: 20px;
+  line-height: 1.7;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+h1 { font-size: 1.6em; margin: 0 0 4px; }
+h2 { font-size: 1.3em; margin: 24px 0 8px; }
+.subtitle { color: #444; margin: 0 0 24px; }
+
+.card {
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px 0;
+  background: var(--paper);
+}
+
+label { display: block; font-weight: 600; margin: 16px 0 4px; }
+
+input[type='text'],
+input[type='password'] {
+  width: 100%;
+  font-size: 1em;
+  padding: 12px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+}
+
+button {
+  font-size: 1.05em;
+  font-weight: 700;
+  padding: 14px 24px;
+  margin-top: 16px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+  min-height: 56px;
+}
+button:hover { filter: brightness(1.1); }
+button.secondary {
+  background: var(--paper);
+  color: var(--accent);
+  border: 2px solid var(--accent);
+}
+button.danger {
+  background: var(--paper);
+  color: var(--warn);
+  border: 2px solid var(--warn);
+}
+
+.linklike {
+  background: none;
+  border: none;
+  color: var(--accent);
+  text-decoration: underline;
+  font-weight: 400;
+  min-height: 0;
+  padding: 8px 0;
+}
+
+.choice-group { margin: 8px 0 16px; }
+.choice {
+  display: block;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  margin: 8px 0;
+  cursor: pointer;
+}
+.choice.selected {
+  border-color: var(--accent);
+  background: #eaf2fb;
+  font-weight: 700;
+}
+.choice input { margin-right: 12px; transform: scale(1.4); }
+
+.status-ok {
+  background: var(--ok-bg);
+  border: 2px solid var(--ok);
+  color: var(--ok);
+  border-radius: 10px;
+  padding: 14px;
+  font-weight: 600;
+}
+.status-warn {
+  background: var(--warn-bg);
+  border: 2px solid var(--warn);
+  color: var(--warn);
+  border-radius: 10px;
+  padding: 14px;
+  font-weight: 600;
+}
+
+.error { color: var(--warn); font-weight: 700; }
+.note { font-size: 0.85em; color: #444; }
+
+.score-big {
+  font-size: 2.4em;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.person-card h3 { margin: 0 0 8px; font-size: 1.15em; }
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
