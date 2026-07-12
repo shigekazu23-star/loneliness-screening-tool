@@ -27,7 +27,7 @@ export default function TrendChart({ history }) {
     <svg
       viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
       role="img"
-      aria-label="点数の推移グラフ"
+      aria-label="Score trend chart"
       style={{ width: '100%', height: 'auto' }}
     >
       <rect width={WIDTH} height={HEIGHT} fill="#ffffff" />

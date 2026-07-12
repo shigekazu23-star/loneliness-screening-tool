@@ -10,6 +10,7 @@ __pycache__/
 # Node
 node_modules/
 dist/
+.vite/
 
 # Editors and OS
 .vscode/

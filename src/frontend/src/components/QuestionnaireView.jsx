@@ -4,26 +4,27 @@
 
 import { useState } from 'react'
 import { api } from '../api.js'
-import { ja } from '../i18n/ja.js'
-
-const ITEMS = [
-  { key: 'q1', text: ja.q1 },
-  { key: 'q2', text: ja.q2 },
-  { key: 'q3', text: ja.q3 },
-]
-const ANSWERS = [
-  { value: 1, text: ja.answer1 },
-  { value: 2, text: ja.answer2 },
-  { value: 3, text: ja.answer3 },
-]
+import { useT } from '../i18n/index.js'
 
 export default function QuestionnaireView({ onSubmitted }) {
+  const t = useT()
   const [answers, setAnswers] = useState({})
   const [error, setError] = useState('')
 
+  const items = [
+    { key: 'q1', text: t.q1 },
+    { key: 'q2', text: t.q2 },
+    { key: 'q3', text: t.q3 },
+  ]
+  const options = [
+    { value: 1, text: t.answer1 },
+    { value: 2, text: t.answer2 },
+    { value: 3, text: t.answer3 },
+  ]
+
   async function submit() {
-    if (ITEMS.some((item) => !answers[item.key])) {
-      setError(ja.answerAllItems)
+    if (items.some((item) => !answers[item.key])) {
+      setError(t.answerAllItems)
       return
     }
     setError('')
@@ -31,19 +32,19 @@ export default function QuestionnaireView({ onSubmitted }) {
       const result = await api.submitResponse(answers)
       onSubmitted(result)
     } catch {
-      setError(ja.errorGeneric)
+      setError(t.errorGeneric)
     }
   }
 
   return (
     <div className="card">
-      <h2>{ja.questionnaireTitle}</h2>
-      <p>{ja.questionnaireLead}</p>
-      {ITEMS.map((item) => (
+      <h2>{t.questionnaireTitle}</h2>
+      <p>{t.questionnaireLead}</p>
+      {items.map((item) => (
         <fieldset key={item.key} style={{ border: 'none', padding: 0 }}>
           <legend style={{ fontWeight: 700, padding: 0 }}>{item.text}</legend>
           <div className="choice-group">
-            {ANSWERS.map((answer) => (
+            {options.map((answer) => (
               <label
                 key={answer.value}
                 className={`choice ${
@@ -65,7 +66,7 @@ export default function QuestionnaireView({ onSubmitted }) {
         </fieldset>
       ))}
       {error && <p className="error">{error}</p>}
-      <button onClick={submit}>{ja.submitAnswers}</button>
+      <button onClick={submit}>{t.submitAnswers}</button>
     </div>
   )
 }

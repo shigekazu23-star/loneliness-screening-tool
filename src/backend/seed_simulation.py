@@ -23,17 +23,17 @@ PASSWORD = "Passw0rd!demo"
 # Each answer triple maps to a score between 3 and 9.
 TRAJECTORIES = {
     "tanaka": {
-        "display_name": "田中 花子",
+        "display_name": "Hanako Tanaka",
         "pattern": "stable",
         "answers": [(1, 1, 2), (1, 2, 1), (2, 1, 1), (1, 1, 2), (1, 2, 1)],
     },
     "sato": {
-        "display_name": "佐藤 太郎",
+        "display_name": "Taro Sato",
         "pattern": "worsening",
         "answers": [(1, 1, 2), (2, 2, 1), (2, 2, 2), (3, 2, 2), (3, 3, 2)],
     },
     "suzuki": {
-        "display_name": "鈴木 良子",
+        "display_name": "Yoshiko Suzuki",
         "pattern": "improving",
         "answers": [(3, 3, 2), (3, 2, 2), (2, 2, 2), (2, 1, 2), (1, 2, 1)],
     },
@@ -75,7 +75,7 @@ def seed():
 
     if not repo.find_user_by_username(conn, "kaigo"):
         caregiver_id = repo.create_user(
-            conn, "kaigo", password_hash, "caregiver", "介護 支援"
+            conn, "kaigo", password_hash, "caregiver", "Kei Yamamoto"
         )
         for user_id in older_ids.values():
             repo.link_caregiver(conn, caregiver_id, user_id)
