@@ -1,9 +1,11 @@
 // ---- M2 Consent UI: explicit opt-in in plain language ----
 
 import { api } from '../api.js'
-import { ja } from '../i18n/ja.js'
+import { useT } from '../i18n/index.js'
 
 export default function ConsentView({ onConsented }) {
+  const t = useT()
+
   async function agree() {
     await api.grantConsent()
     onConsented()
@@ -11,9 +13,9 @@ export default function ConsentView({ onConsented }) {
 
   return (
     <div className="card">
-      <h2>{ja.consentTitle}</h2>
-      <p>{ja.consentBody}</p>
-      <button onClick={agree}>{ja.consentAgree}</button>
+      <h2>{t.consentTitle}</h2>
+      <p>{t.consentBody}</p>
+      <button onClick={agree}>{t.consentAgree}</button>
     </div>
   )
 }
