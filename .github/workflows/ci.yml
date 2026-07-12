@@ -1,1 +1,41 @@
+# ---- Continuous Integration ----
+# Runs on every push and pull request: backend tests (pytest) and a
+# frontend production build. A change that breaks the core scoring or
+# flag logic, the API contract, or the frontend build cannot be merged
+# unnoticed, which is the quality-assurance role of CI described in the
+# Unit 4 CI/CD reflection.
 
+name: CI
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r src/backend/requirements.txt
+      - name: Run tests
+        run: python -m pytest tests -v
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        working-directory: src/frontend
+        run: npm ci
+      - name: Build
+        working-directory: src/frontend
+        run: npm run build
