@@ -49,6 +49,10 @@ npm run dev
 
 Open http://localhost:5173. The Vite dev server proxies `/api` to Flask.
 
+Full prerequisites, environment variables (`LST_JWT_SECRET`,
+`LST_DB_PATH`), build and deployment commands, and maintenance notes:
+see [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
+
 Demo accounts created by `seed_simulation.py` (password `Passw0rd!demo`):
 
 | Username | Role | Simulated trajectory |
@@ -71,9 +75,10 @@ role-based access, and immediate effect of consent revocation.
 ## Repository structure
 
 - `src/`     source code (React frontend, Flask backend)
-- `docs/`    documentation (SRS, technical report, notes)
+- `docs/`    documentation (SRS, technical report, configuration guide, figures)
 - `design/`  design files (architecture diagram)
 - `tests/`   test code
+- `scripts/` evaluation scripts (flag reliability metrics, API latency, figures)
 - `.github/workflows/`  continuous integration
 
 ## Branches
