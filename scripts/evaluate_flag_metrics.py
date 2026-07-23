@@ -92,7 +92,13 @@ def flag_fires(answer_trajectory) -> bool:
     return False
 
 
-def main():
+def compute_results() -> dict:
+    """Run the full evaluation and return counts and metrics.
+
+    Kept separate from the report printing so that other scripts (for
+    example the Part B-3 figure generator) reuse the exact same numbers
+    from a single source of truth.
+    """
     rng = random.Random(SEED)
     tp = fp = tn = fn = 0
     per_pattern = {}
@@ -112,11 +118,26 @@ def main():
                 tn += 1
         per_pattern[name] = fired
 
+    return {
+        "per_pattern": per_pattern,
+        "tp": tp, "fp": fp, "tn": tn, "fn": fn,
+        "sensitivity": tp / (tp + fn),
+        "specificity": tn / (tn + fp),
+        "ppv": tp / (tp + fp),
+        "npv": tn / (tn + fn),
+    }
+
+
+def main():
+    results = compute_results()
+    per_pattern = results["per_pattern"]
+    tp, fp = results["tp"], results["fp"]
+    tn, fn = results["tn"], results["fn"]
     total = tp + fp + tn + fn
-    sensitivity = tp / (tp + fn)
-    specificity = tn / (tn + fp)
-    ppv = tp / (tp + fp)
-    npv = tn / (tn + fn)
+    sensitivity = results["sensitivity"]
+    specificity = results["specificity"]
+    ppv = results["ppv"]
+    npv = results["npv"]
 
     print("=" * 62)
     print("Risk-flag reliability evaluation (Unit 6, Part B-1)")
