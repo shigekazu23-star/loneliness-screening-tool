@@ -16,12 +16,16 @@
 # The script registers its own throwaway user (lat_probe), grants consent,
 # then times ITERATIONS requests per endpoint and reports mean / median /
 # 95th percentile in milliseconds.
+#
+# Only the Python standard library is used, so the script runs in the same
+# environment as the application itself with no extra installation.
 
+import json
 import statistics
 import sys
 import time
-
-import requests
+import urllib.error
+import urllib.request
 
 BASE_URL = "http://127.0.0.1:5000"
 ITERATIONS = 100
@@ -35,42 +39,62 @@ def percentile_95(samples):
     return ordered[index]
 
 
-def timed(method, url, **kwargs):
+def request(method, path, payload=None, token=None, timeout=10):
+    """Send one JSON request and return (status, parsed body)."""
+    data = json.dumps(payload).encode() if payload is not None else None
+    req = urllib.request.Request(f"{BASE_URL}{path}", data=data, method=method)
+    req.add_header("Content-Type", "application/json")
+    if token:
+        req.add_header("Authorization", f"Bearer {token}")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as res:
+            body = res.read().decode()
+            return res.status, (json.loads(body) if body else {})
+    except urllib.error.HTTPError as err:
+        body = err.read().decode()
+        return err.code, (json.loads(body) if body else {})
+
+
+def timed(method, path, payload=None, token=None):
+    """Time one request end to end and fail loudly on an error status."""
     start = time.perf_counter()
-    response = method(url, timeout=10, **kwargs)
+    status, body = request(method, path, payload, token)
     elapsed_ms = (time.perf_counter() - start) * 1000
-    response.raise_for_status()
-    return elapsed_ms, response
+    if status >= 400:
+        sys.exit(f"{method} {path} failed: HTTP {status} {body}")
+    return elapsed_ms, body
 
 
 def main():
     # ---- Setup: health check, throwaway user, consent ----
     try:
-        requests.get(f"{BASE_URL}/api/health", timeout=5).raise_for_status()
-    except requests.RequestException:
+        status, _ = request("GET", "/api/health", timeout=5)
+    except OSError:
         sys.exit(f"Backend not reachable at {BASE_URL}. "
                  "Start it with: flask --app app run --port 5000")
+    if status != 200:
+        sys.exit(f"health check failed: HTTP {status}")
 
-    register = requests.post(f"{BASE_URL}/api/register", json={
+    status, body = request("POST", "/api/register", {
         "username": USERNAME, "password": PASSWORD,
         "role": "older_adult", "display_name": "Latency Probe",
-    }, timeout=10)
-    if register.status_code not in (201, 409):  # 409 = already registered
-        sys.exit(f"registration failed: {register.status_code} {register.text}")
+    })
+    if status not in (201, 409):  # 409 = already registered
+        sys.exit(f"registration failed: HTTP {status} {body}")
 
-    token = requests.post(f"{BASE_URL}/api/login", json={
+    _, body = request("POST", "/api/login", {
         "username": USERNAME, "password": PASSWORD,
-    }, timeout=10).json()["token"]
-    headers = {"Authorization": f"Bearer {token}"}
+    })
+    token = body["token"]
 
-    requests.post(f"{BASE_URL}/api/consent", headers=headers, timeout=10)
+    request("POST", "/api/consent", token=token)
 
     # ---- Measurement ----
     results = {}
 
     samples = []
     for _ in range(ITERATIONS):
-        elapsed, _ = timed(requests.post, f"{BASE_URL}/api/login", json={
+        elapsed, _ = timed("POST", "/api/login", {
             "username": USERNAME, "password": PASSWORD,
         })
         samples.append(elapsed)
@@ -79,15 +103,13 @@ def main():
     samples = []
     for i in range(ITERATIONS):
         answers = {"q1": 1 + i % 3, "q2": 1 + (i // 3) % 3, "q3": 2}
-        elapsed, _ = timed(requests.post, f"{BASE_URL}/api/responses",
-                           json=answers, headers=headers)
+        elapsed, _ = timed("POST", "/api/responses", answers, token=token)
         samples.append(elapsed)
     results["POST /api/responses"] = samples
 
     samples = []
     for _ in range(ITERATIONS):
-        elapsed, _ = timed(requests.get, f"{BASE_URL}/api/responses",
-                           headers=headers)
+        elapsed, _ = timed("GET", "/api/responses", token=token)
         samples.append(elapsed)
     results["GET /api/responses"] = samples
 
@@ -95,7 +117,7 @@ def main():
     print("=" * 66)
     print("API latency measurement (Unit 6, Part B-1)")
     print(f"target={BASE_URL}  iterations/endpoint={ITERATIONS}  "
-          "transport=HTTP (requests)")
+          "transport=HTTP (urllib)")
     print("=" * 66)
     print()
     print(f"  {'endpoint':<22} {'mean':>8} {'median':>8} {'p95':>8}   (ms)")
