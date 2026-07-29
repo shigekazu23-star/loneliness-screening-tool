@@ -1,0 +1,22 @@
+====================================================================
+Fault injection check (Unit 7, Part A)
+====================================================================
+target        : src/backend/core/scoring.py
+fault         : HIGH_SCORE_CUTOFF = 6  ->  HIGH_SCORE_CUTOFF = 8
+meaning       : the elevated-loneliness threshold is raised, so the
+                risk flag would stay silent for at-risk users
+scope         : unit + integration
+
+--- running the suite against the faulty code ---
+    tests\test_trend.py:39: AssertionError
+    =========================== short test summary info ===========================
+    FAILED tests/test_scoring.py::test_high_cutoff - assert False is True
+    FAILED tests/test_trend.py::test_worsening_trajectory_flags - AssertionError:...
+    FAILED tests/test_trend.py::test_sustained_high_flags - AssertionError: asser...
+    3 failed, 21 passed in 3.71s
+
+--- original file restored and verified ---
+
+RESULT: PASS - the suite detected the injected fault.
+The tests therefore have real regression-detection power; a silent
+change to the screening threshold cannot reach main unnoticed.

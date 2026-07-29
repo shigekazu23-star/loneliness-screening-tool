@@ -1,0 +1,18 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- C:\data\dev\loneliness-screening-tool\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\data\dev\loneliness-screening-tool
+configfile: pytest.ini
+plugins: base-url-2.1.0, cov-7.1.0, playwright-0.8.0
+collecting ... collected 8 items
+
+tests/e2e/test_e2e_acceptance.py::test_older_adult_completes_a_screening_cycle[chromium] PASSED [ 12%]
+tests/e2e/test_e2e_acceptance.py::test_worsening_trajectory_raises_the_flag_in_the_interface[chromium] PASSED [ 25%]
+tests/e2e/test_e2e_acceptance.py::test_stable_trajectory_does_not_raise_the_flag[chromium] PASSED [ 37%]
+tests/e2e/test_e2e_acceptance.py::test_caregiver_sees_only_consented_people[chromium] PASSED [ 50%]
+tests/e2e/test_e2e_acceptance.py::test_language_toggle_switches_the_whole_interface[chromium] PASSED [ 62%]
+tests/e2e/test_e2e_acceptance.py::test_wrong_password_is_rejected_with_a_clear_message[chromium] PASSED [ 75%]
+tests/e2e/test_e2e_acceptance.py::test_incomplete_answers_are_refused[chromium] PASSED [ 87%]
+tests/e2e/test_e2e_acceptance.py::test_withdrawing_consent_removes_the_person_from_the_caregiver_view[chromium] PASSED [100%]
+
+============================== 8 passed in 8.30s ==============================
