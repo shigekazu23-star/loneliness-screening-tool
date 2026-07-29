@@ -4,6 +4,8 @@
 # simulated trajectories (stable / worsening / improving) and must not
 # fire on a single high score.
 
+import pytest
+
 from core import trend
 
 STABLE = [4, 4, 5, 4, 4]
@@ -46,6 +48,39 @@ def test_too_few_assessments_never_flag():
     assert trend.evaluate_flag([])["level"] == trend.FLAG_NONE
     assert trend.evaluate_flag([9])["level"] == trend.FLAG_NONE
     assert trend.evaluate_flag([9, 9])["level"] == trend.FLAG_NONE
+
+
+# ---- Boundary (edge) cases at the decision thresholds ----
+# The flag switches behaviour at two thresholds: the elevated-score cutoff
+# and the minimum rise that counts as worsening. A rule that changes at a
+# boundary needs cases on both sides of it, so each test below is paired
+# with its neighbour one step away.
+
+
+@pytest.mark.edge
+def test_window_exactly_at_cutoff_flags():
+    """Scores sitting exactly on the cutoff still count as sustained high."""
+    assert (
+        trend.evaluate_flag([6, 6, 6])["level"] == trend.FLAG_SUSTAINED_HIGH
+    )
+
+
+@pytest.mark.edge
+def test_window_one_step_below_cutoff_does_not_flag():
+    """One step below the cutoff must stay silent."""
+    assert trend.evaluate_flag([5, 5, 5])["level"] == trend.FLAG_NONE
+
+
+@pytest.mark.edge
+def test_minimum_qualifying_rise_flags():
+    """A rise of exactly the minimum, with the last two elevated, fires."""
+    assert trend.evaluate_flag([4, 6, 6])["level"] == trend.FLAG_WORSENING
+
+
+@pytest.mark.edge
+def test_rise_one_step_short_of_minimum_does_not_flag():
+    """A rise one step short of the minimum must stay silent."""
+    assert trend.evaluate_flag([5, 6, 6])["level"] == trend.FLAG_NONE
 
 
 def test_trend_direction():
