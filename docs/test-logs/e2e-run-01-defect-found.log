@@ -1,0 +1,76 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- C:\data\dev\loneliness-screening-tool\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\data\dev\loneliness-screening-tool
+configfile: pytest.ini
+plugins: base-url-2.1.0, cov-7.1.0, playwright-0.8.0
+collecting ... collected 8 items
+
+tests/e2e/test_e2e_acceptance.py::test_older_adult_completes_a_screening_cycle[chromium] PASSED [ 12%]
+tests/e2e/test_e2e_acceptance.py::test_worsening_trajectory_raises_the_flag_in_the_interface[chromium] PASSED [ 25%]
+tests/e2e/test_e2e_acceptance.py::test_stable_trajectory_does_not_raise_the_flag[chromium] PASSED [ 37%]
+tests/e2e/test_e2e_acceptance.py::test_caregiver_sees_only_consented_people[chromium] PASSED [ 50%]
+tests/e2e/test_e2e_acceptance.py::test_language_toggle_switches_the_whole_interface[chromium] FAILED [ 62%]
+tests/e2e/test_e2e_acceptance.py::test_wrong_password_is_rejected_with_a_clear_message[chromium] PASSED [ 75%]
+tests/e2e/test_e2e_acceptance.py::test_incomplete_answers_are_refused[chromium] PASSED [ 87%]
+tests/e2e/test_e2e_acceptance.py::test_withdrawing_consent_removes_the_person_from_the_caregiver_view[chromium] PASSED [100%]
+
+================================== FAILURES ===================================
+_________ test_language_toggle_switches_the_whole_interface[chromium] _________
+
+app_page = <Page url='http://127.0.0.1:5056/'>
+
+    @pytest.mark.acceptance
+    def test_language_toggle_switches_the_whole_interface(app_page):
+        """Japanese-first design (Unit 1): the interface must switch languages.
+    
+        Given the evaluation build running in English,
+        when the language toggle is pressed,
+        then the interface strings change to Japanese.
+        """
+        page = app_page
+        expect(page.get_by_text("Loneliness Check")).to_be_visible()
+    
+>       page.get_by_role("button", name="“ú–{Œê").click()
+
+tests\e2e\test_e2e_acceptance.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\playwright\sync_api\_generated.py:17672: in click
+    self._sync(
+.venv\Lib\site-packages\playwright\_impl\_locator.py:163: in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\playwright\_impl\_frame.py:591: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+.venv\Lib\site-packages\playwright\_impl\_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <playwright._impl._connection.Connection object at 0x000001D09738EB40>
+cb = <function Channel.send.<locals>.<lambda> at 0x000001D097B40720>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        st: List[inspect.FrameInfo] = getattr(
+            task, "__pw_stack__", None
+        ) or inspect.stack(0)
+    
+        parsed_st = _extract_stack_trace_information_from_stack(st, is_internal, title)
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for get_by_role("button", name="“ú–{Œê")
+
+.venv\Lib\site-packages\playwright\_impl\_connection.py:563: TimeoutError
+=========================== short test summary info ===========================
+FAILED tests/e2e/test_e2e_acceptance.py::test_language_toggle_switches_the_whole_interface[chromium]
+======================== 1 failed, 7 passed in 38.32s =========================

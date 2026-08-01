@@ -1,0 +1,9 @@
+# GitHub Pages configuration for the project portfolio page.
+# The site serves from /docs on the main branch; everything else in this
+# folder (engineering docs, test logs) remains reachable as plain pages.
+theme: jekyll-theme-cayman
+title: Loneliness Screening and Visualization Tool for Older Adults
+description: >-
+  MSIT capstone project by Shigekazu Ukawa — a tested, accessibility-checked
+  web prototype that screens loneliness with a validated scale and alerts a
+  caregiver only when the pattern is sustained or worsening.

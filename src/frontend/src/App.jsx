@@ -84,7 +84,13 @@ export default function App() {
             <button
               className="linklike"
               onClick={() => switchLang(lang === 'en' ? 'ja' : 'en')}
-              aria-label="Switch language"
+              // The accessible name must contain the visible label, otherwise
+              // speech-input users cannot activate the control by saying what
+              // they see (WCAG 2.1 SC 2.5.3, Label in Name). A fixed English
+              // aria-label used to override the visible text and broke this.
+              aria-label={
+                lang === 'en' ? '日本語に切り替える' : 'Switch to English'
+              }
             >
               {lang === 'en' ? '日本語' : 'English'}
             </button>{' '}
