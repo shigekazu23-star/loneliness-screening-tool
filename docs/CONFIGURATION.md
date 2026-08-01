@@ -95,14 +95,15 @@ gunicorn --workers 2 --bind 127.0.0.1:5000 "app:app"
 
 The planned deployment target (Unit 6 deployment plan) is a Docker
 container on a PaaS: the container image captures the Python version,
-dependencies, and environment defaults so the same artifact runs
-identically in every environment, and the two variables above remain the
-only per-environment configuration.
+dependencies, and environment defaults, which helps keep the runtime
+environment consistent across deployment hosts, and the two variables
+above remain the only per-environment configuration.
 
 ## 6. Verification after setup or deploy
 
 ```bash
-python -m pytest tests -v --cov=src/backend --cov-report=term   # 24 tests pass
+python -m pytest tests -v --ignore=tests/e2e --cov=src/backend --cov-report=term   # 28 fast tests pass
+python -m pytest tests/e2e -v   # 8 browser E2E tests (Playwright browsers + frontend build required)
 curl http://127.0.0.1:5000/api/health                            # {"status": "ok"}
 python scripts/evaluate_flag_metrics.py    # reproduces flag reliability numbers
 python scripts/measure_latency.py          # latency check against the running server

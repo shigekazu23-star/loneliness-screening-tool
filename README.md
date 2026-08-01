@@ -65,12 +65,18 @@ Demo accounts created by `seed_simulation.py` (password `Passw0rd!demo`):
 ## Tests
 
 ```
-python -m pytest tests -v
+python -m pytest tests -v --ignore=tests/e2e    # fast suite, runs on CI
+python -m pytest tests/e2e -v                   # browser E2E (Playwright + frontend build)
 ```
 
-24 tests cover the scoring rules, the trend-linked flag (including the
-requirement that a single high score never fires), the consent gate,
-role-based access, and immediate effect of consent revocation.
+36 tests across three levels. 19 unit tests cover the scoring rules and the
+trend-linked flag, including paired boundary cases at both decision
+thresholds and the requirement that a single high score never fires. 9
+integration tests cover the API together with a real disposable database:
+the consent gate, role-based access, and the immediate effect of consent
+revocation. 8 browser-driven end-to-end scenarios, written in
+given-when-then form, drive the production frontend build in Chromium and
+double as acceptance tests against the module requirements.
 
 ## Repository structure
 
